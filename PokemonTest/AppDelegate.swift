@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        self.copyDatabaseToDocument()
         return true
     }
 
@@ -41,6 +42,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    func pathDocument() -> String {
+        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+        return path!.appending("/pokemon.db")
+    }
+    
+    func copyDatabaseToDocument() {
+        let pathDocument = self.pathDocument()
+        //        print(pathDocument)
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: pathDocument) {
+            let pathBundle = Bundle.main.path(forResource: "pokemon", ofType: "db")
+            //            print(pathBundle!)
+            do {
+                try fileManager.copyItem(atPath: pathBundle!, toPath: pathDocument)
+                print("Complete")
+            } catch let error {
+                print("error: \(error.localizedDescription)")
+            }
+        } else {
+            print("File existed!")
+        }
+    }
 }
 
